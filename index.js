@@ -128,7 +128,7 @@ Sonus.init = (options, recognizer) => {
       try {
         let triggerHotword = (index == 0) ? hotword : models.lookup(index)
         sonus.emit('hotword', index, triggerHotword)
-        CloudSpeechRecognizer.startStreaming(opts, sonus.mic, csr)
+        CloudSpeechRecognizer.startStreaming(opts, sonus.mic.stream(), csr)
       } catch (e) {
         throw ERROR.INVALID_INDEX
       }
@@ -138,11 +138,11 @@ Sonus.init = (options, recognizer) => {
   }
 
   sonus.pause = () => {
-    record.pause()
+    Recorder.pause()
   }
 
   sonus.resume = () => {
-    record.resume()
+    Recorder.resume()
   }
 
   return sonus
@@ -155,15 +155,15 @@ Sonus.start = sonus => {
     ArecordHelper.init(sonus)
   }
 
-  sonus.mic.pipe(sonus.detector)
+  sonus.mic.stream().pipe(sonus.detector)
   sonus.started = true
 }
 
 const Recorder = (sonus) => {
-  return record.start({
+  return record.record({
     threshold: 0,
     device: sonus.device || null,
-    recordProgram: sonus.recordProgram || "rec",
+    recordProgram: sonus.recordProgram || "arecord",
     verbose: false
   })
 }
@@ -185,7 +185,7 @@ ArecordHelper.track = (sonus) => {
 }
 
 ArecordHelper.restart = (sonus) => {
-  sonus.mic.unpipe(sonus.detector)
+  sonus.mic.stream().unpipe(sonus.detector)
   record.stop()
 
   // Restart the audio recording
@@ -197,9 +197,9 @@ ArecordHelper.restart = (sonus) => {
 
 Sonus.trigger = (sonus, index, hotword) => sonus.trigger(index, hotword)
 
-Sonus.pause = () => record.pause()
+Sonus.pause = (sonus) => Recorder(sonus).pause()
 
-Sonus.resume = () => record.resume()
+Sonus.resume = () => Recorder(sonus).resume()
 
 Sonus.stop = () => record.stop()
 
