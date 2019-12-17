@@ -199,7 +199,7 @@ Sonus.trigger = (sonus, index, hotword) => sonus.trigger(index, hotword)
 
 Sonus.pause = (sonus) => Recorder(sonus).pause()
 
-Sonus.resume = () => Recorder(sonus).resume()
+Sonus.resume = (sonus) => Recorder(sonus).resume()
 
 Sonus.stop = () => record.stop()
 
