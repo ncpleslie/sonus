@@ -163,7 +163,7 @@ const Recorder = (sonus) => {
   return record.record({
     threshold: 0,
     device: sonus.device || null,
-    recordProgram: sonus.recordProgram || "arecord",
+    recordProgram: sonus.recordProgram || "rec",
     verbose: false
   })
 }
